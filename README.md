@@ -4,15 +4,15 @@
 
 # LogMagic: Targeted Tmux Command Capturing
 
-[![CI Status](https://img.shields.io/github/actions/workflow/status/mortimus/logMagic/ci.yml?branch=main&label=CI&style=for-the-badge&logo=github)](https://github.com/mortimus/logMagic/actions)
-[![Release](https://img.shields.io/github/v/release/mortimus/logMagic?style=for-the-badge&logo=github&color=blue)](https://github.com/mortimus/logMagic/releases)
-[![License](https://img.shields.io/github/license/mortimus/logMagic?style=for-the-badge&logo=opensourceinitiative&color=green)](https://github.com/mortimus/logMagic/blob/main/LICENSE.md)
+[![CI Status](https://img.shields.io/github/actions/workflow/status/Mortimus/ansi2png/ci.yml?branch=main&label=CI&style=for-the-badge&logo=github)](https://github.com/Mortimus/ansi2png/actions)
+[![Release](https://img.shields.io/github/v/release/Mortimus/ansi2png?style=for-the-badge&logo=github&color=blue)](https://github.com/Mortimus/ansi2png/releases)
+[![License](https://img.shields.io/github/license/Mortimus/ansi2png?style=for-the-badge&logo=opensourceinitiative&color=green)](https://github.com/Mortimus/ansi2png/blob/main/LICENSE.md)
 [![Rust](https://img.shields.io/badge/Rust-1.75+-orange?style=for-the-badge&logo=rust)](https://www.rust-lang.org/)
-[![Repo Size](https://img.shields.io/github/repo-size/mortimus/logMagic?style=for-the-badge&logo=git)](https://github.com/mortimus/logMagic)
-[![Stars](https://img.shields.io/github/stars/mortimus/logMagic?style=for-the-badge&logo=github)](https://github.com/mortimus/logMagic/stargazers)
-[![Forks](https://img.shields.io/github/forks/mortimus/logMagic?style=for-the-badge&logo=github)](https://github.com/mortimus/logMagic/network/members)
-[![Issues](https://img.shields.io/github/issues/mortimus/logMagic?style=for-the-badge&logo=github)](https://github.com/mortimus/logMagic/issues)
-[![Created By](https://img.shields.io/badge/Created%20By-Mortimus-red?style=for-the-badge&logo=ghost)](https://github.com/mortimus)
+[![Repo Size](https://img.shields.io/github/repo-size/Mortimus/ansi2png?style=for-the-badge&logo=git)](https://github.com/Mortimus/ansi2png)
+[![Stars](https://img.shields.io/github/stars/Mortimus/ansi2png?style=for-the-badge&logo=github)](https://github.com/Mortimus/ansi2png/stargazers)
+[![Forks](https://img.shields.io/github/forks/Mortimus/ansi2png?style=for-the-badge&logo=github)](https://github.com/Mortimus/ansi2png/network/members)
+[![Issues](https://img.shields.io/github/issues/Mortimus/ansi2png?style=for-the-badge&logo=github)](https://github.com/Mortimus/ansi2png/issues)
+[![Created By](https://img.shields.io/badge/Created%20By-Mortimus-red?style=for-the-badge&logo=ghost)](https://github.com/Mortimus)
 
 </div>
 
