@@ -675,9 +675,7 @@ fn render_text_to_png(text: &str, width: usize, output_path: &str, theme_name: &
     };
 
     let mut statemachine = VteParser::new();
-    for byte in text.bytes() {
-        statemachine.advance(&mut grid, byte);
-    }
+    statemachine.advance(&mut grid, text.as_bytes());
     
     while grid.height > 1 && grid.cells[grid.height - 1].iter().all(|c| c.c == ' ' && c.bg == Rgb([0,0,0])) {
         grid.height -= 1;
@@ -909,18 +907,12 @@ mod tests {
 
         let mut parser = VteParser::new();
         // CSI 1 A (Cursor Up)
-        parser.advance(&mut grid, b'\x1b');
-        parser.advance(&mut grid, b'[');
-        parser.advance(&mut grid, b'1');
-        parser.advance(&mut grid, b'A');
+        parser.advance(&mut grid, b"\x1b[1A");
         assert_eq!(grid.cursor_y, 0);
         assert_eq!(grid.cursor_x, 10);
 
         // CSI 5 C (Cursor Right)
-        parser.advance(&mut grid, b'\x1b');
-        parser.advance(&mut grid, b'[');
-        parser.advance(&mut grid, b'5');
-        parser.advance(&mut grid, b'C');
+        parser.advance(&mut grid, b"\x1b[5C");
         assert_eq!(grid.cursor_x, 15);
     }
 }
