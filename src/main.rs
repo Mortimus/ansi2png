@@ -774,3 +774,153 @@ fn draw_char(
          }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_theme_from_str() {
+        assert!(matches!(Theme::from_str("light"), Theme::Light));
+        assert!(matches!(Theme::from_str("dark"), Theme::Dark));
+        assert!(matches!(Theme::from_str("invalid"), Theme::Light));
+    }
+
+    #[test]
+    fn test_theme_colors() {
+        let light = Theme::Light;
+        let dark = Theme::Dark;
+        assert_eq!(light.bg_color(), Rgb([255, 255, 255]));
+        assert_eq!(dark.bg_color(), Rgb([20, 20, 20]));
+        assert_eq!(light.default_fg(), Rgb([0, 0, 0]));
+        assert_eq!(dark.default_fg(), Rgb([255, 255, 255]));
+    }
+
+    #[test]
+    fn test_grid_initialization() {
+        let theme = Theme::Light;
+        let width = 80;
+        let grid = Grid {
+            cells: vec![vec![Cell::default(); width]; 1],
+            width,
+            height: 1,
+            cursor_x: 0,
+            cursor_y: 0,
+            fg: theme.default_fg(),
+            bg: theme.bg_color(),
+            theme,
+        };
+        assert_eq!(grid.width, 80);
+        assert_eq!(grid.height, 1);
+        assert_eq!(grid.cells.len(), 1);
+        assert_eq!(grid.cells[0].len(), 80);
+    }
+
+    #[test]
+    fn test_grid_print_and_wrap() {
+        let theme = Theme::Light;
+        let width = 5;
+        let mut grid = Grid {
+            cells: vec![vec![Cell { c: ' ', fg: theme.default_fg(), bg: theme.bg_color() }; width]; 1],
+            width,
+            height: 1,
+            cursor_x: 0,
+            cursor_y: 0,
+            fg: theme.default_fg(),
+            bg: theme.bg_color(),
+            theme,
+        };
+
+        grid.print('A');
+        assert_eq!(grid.cursor_x, 1);
+        assert_eq!(grid.cells[0][0].c, 'A');
+
+        grid.print('B');
+        grid.print('C');
+        grid.print('D');
+        grid.print('E');
+        // In this implementation, height only increments at the START of a print call 
+        // if the cursor is already past the current boundary.
+        assert_eq!(grid.cursor_x, 0);
+        assert_eq!(grid.cursor_y, 1);
+        assert_eq!(grid.height, 1); // Row not added yet
+        
+        grid.print('F');
+        assert_eq!(grid.cursor_x, 1);
+        assert_eq!(grid.cursor_y, 1);
+        assert_eq!(grid.height, 2); // Row added now
+        assert_eq!(grid.cells[1][0].c, 'F');
+    }
+
+    #[test]
+    fn test_uuid_and_timestamp_extraction() {
+        let uuid = "550e8400-e29b-41d4-a716-446655440000";
+        let timestamp = "1700000000";
+        let cmd_b64 = "bHM="; // "ls"
+        let marker = format!("\x1b]1337;LogExec:{}|{}|{}\x07", uuid, timestamp, cmd_b64);
+        
+        // Mock main's parse_content logic
+        let re_exec = Regex::new(r"\x1b\]1337;LogExec:([^\x07]+)\x07").unwrap();
+        let cap = re_exec.captures(&marker).unwrap();
+        let parts_str = cap.get(1).unwrap().as_str();
+        let parts: Vec<&str> = parts_str.split('|').collect();
+        
+        assert_eq!(parts[0], uuid);
+        assert_eq!(parts[1], timestamp);
+        assert_eq!(parts[2], cmd_b64);
+        
+        assert_eq!(parts[1].parse::<u64>().unwrap(), 1700000000);
+    }
+
+    #[test]
+    fn test_grid_newline_handling() {
+        let theme = Theme::Light;
+        let width = 80;
+        let mut grid = Grid {
+            cells: vec![vec![Cell::default(); width]; 1],
+            width,
+            height: 1,
+            cursor_x: 10,
+            cursor_y: 0,
+            fg: theme.default_fg(),
+            bg: theme.bg_color(),
+            theme,
+        };
+
+        grid.execute(b'\n');
+        assert_eq!(grid.cursor_x, 0);
+        assert_eq!(grid.cursor_y, 1);
+    }
+
+    #[test]
+    fn test_grid_csi_cursor_movement() {
+        let theme = Theme::Light;
+        let width = 80;
+        let mut grid = Grid {
+            cells: vec![vec![Cell::default(); width]; 2],
+            width,
+            height: 2,
+            cursor_x: 10,
+            cursor_y: 1,
+            fg: theme.default_fg(),
+            bg: theme.bg_color(),
+            theme,
+        };
+
+        let mut parser = VteParser::new();
+        // CSI 1 A (Cursor Up)
+        parser.advance(&mut grid, b'\x1b');
+        parser.advance(&mut grid, b'[');
+        parser.advance(&mut grid, b'1');
+        parser.advance(&mut grid, b'A');
+        assert_eq!(grid.cursor_y, 0);
+        assert_eq!(grid.cursor_x, 10);
+
+        // CSI 5 C (Cursor Right)
+        parser.advance(&mut grid, b'\x1b');
+        parser.advance(&mut grid, b'[');
+        parser.advance(&mut grid, b'5');
+        parser.advance(&mut grid, b'C');
+        assert_eq!(grid.cursor_x, 15);
+    }
+}
